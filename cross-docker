@@ -18,13 +18,13 @@ ARCH=$1
 
 shift
 
-if [ ! -f qemu ]
+if [ ! -f /tmp/qemu-static ]
 then
-	mkdir -p qemu
-	(cd qemu && docker run justincormack/debian-qemu-user tarup.sh | tar xf -)
+	mkdir /tmp/qemu-static
+	(cd /tmp/qemu-static && docker run justincormack/debian-qemu-user tarup.sh | tar xf -)
 fi
 
-if [ ! -f qemu/qemu-$ARCH-static ]
+if [ ! -f /tmp/qemu-static/qemu-$ARCH-static ]
 then
 	printf "architecture $ARCH not found\n"
 	exit 1
@@ -32,4 +32,4 @@ fi
 
 docker info | grep -q 'Server Version: 1.10' && EXTRA_ARGS="--security-opt seccomp:unconfined"
 
-docker run -v $PWD/qemu/qemu-$ARCH-static:/usr/bin/qemu-$ARCH-static $EXTRA_ARGS $*
+docker run -v /tmp/qemu-static/qemu-$ARCH-static:/usr/bin/qemu-$ARCH-static $EXTRA_ARGS $*
