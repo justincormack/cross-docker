@@ -20,7 +20,7 @@ shift
 
 if [ ! -f /tmp/qemu-static ]
 then
-	mkdir /tmp/qemu-static
+	mkdir -p /tmp/qemu-static
 	(cd /tmp/qemu-static && docker run justincormack/debian-qemu-user tarup.sh | tar xf -)
 fi
 
