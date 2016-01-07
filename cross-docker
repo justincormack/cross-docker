@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if [ "$#" -lt 2 ]
+then
+	print "usage: $0 arch image [args]"
+	exit 1
+fi
+
+ARCH=$1
+
+shift
+
+[ ! -f qemu ] && make
+
+if [ ! -f qemu/qemu-$ARCH-static ]
+then
+	print "architecture $ARCH not found"
+	exit 1
+fi
+
+IMAGE=$1
+
+shift
+
+docker info | grep -q 'Server Version: 1.10' && SECURITY_OPT="--security-opt seccomp:unconfined"
+
+set -x
+
+EXTRA_ARGS="-it"
+
+docker run --cap-add sys_admin $SECURITY_OPT -v $PWD/qemu/qemu-$ARCH-static:/usr/bin/qemu-$ARCH-static -v $PWD/run.sh:/usr/local/bin/run.sh $EXTRA_ARGS $IMAGE run.sh $*
