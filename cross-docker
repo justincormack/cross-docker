@@ -1,10 +1,18 @@
 #!/bin/sh
 
-if [ "$#" -lt 2 ]
+if [ "$#" -lt 3 ]
 then
-	print "usage: $0 arch [docker args]"
+	printf "usage: $0 run arch [docker args]\n"
 	exit 1
 fi
+
+if [ $1 != "run" ]
+then
+	printf "first argument must be run\n"
+	exit 1
+fi
+
+shift
 
 ARCH=$1
 
@@ -18,7 +26,7 @@ fi
 
 if [ ! -f qemu/qemu-$ARCH-static ]
 then
-	print "architecture $ARCH not found"
+	printf "architecture $ARCH not found\n"
 	exit 1
 fi
 
