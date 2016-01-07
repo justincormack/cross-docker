@@ -4,11 +4,11 @@ This is a wrapper script to let you run different architecture containers with q
 
 ## Prerequisites
 
-You must be running in an environment with a working `binfmt-misc` setup. On Debian, if you
+You must be running in an environment with a working `binfmt_misc` setup. On Debian, if you
 install the `qemu-user-static` package that should be sufficient. On other systems make
 sure that the `binfmt_misc` pseudo filesystem is mounted (and configured).
 
-It is not possible to mount `binfmt-misc` from docker run, you cannot add it as a volume
+It is not possible to mount `binfmt_misc` from docker run, you cannot add it as a volume
 mount for example. This wrapper avoids that by mounting it inside the container with a 
 wrapper script, and some elevated permissions so it can do mount.
 
@@ -27,7 +27,7 @@ The docker option parsing is a bit rubbish.
 
 ## Architectures
 
-If your `binfmt-misc` is set up right the following architectures should be supported:
+If your `binfmt_misc` is set up right the following architectures should be supported:
 
 ```
 aarch64
