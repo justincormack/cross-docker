@@ -32,23 +32,4 @@ fi
 
 docker info | grep -q 'Server Version: 1.10' && EXTRA_ARGS="--security-opt seccomp:unconfined"
 
-# Parsing is rather flaky here, it needs to understand docker arguments
-
-for var in "$@"
-do
-	if [ -z "$IMAGE" ] && echo "$var" | grep -q '^-'
-	then
-		EXTRA_ARGS="$EXTRA_ARGS $var"
-	else
-		if [ -z "$IMAGE" ]
-		then
-			IMAGE="$var"
-		else
-			ARGS="$ARGS $var"
-		fi
-	fi
-done
-
-#set -x
-
-docker run --cap-add sys_admin -v $PWD/qemu/qemu-$ARCH-static:/usr/bin/qemu-$ARCH-static -v $PWD/run.sh:/usr/local/bin/run.sh $EXTRA_ARGS $IMAGE run.sh $ARGS
+docker run -v $PWD/qemu/qemu-$ARCH-static:/usr/bin/qemu-$ARCH-static -v $PWD/run.sh:/usr/local/bin/run.sh $EXTRA_ARGS $*
