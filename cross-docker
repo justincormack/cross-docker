@@ -2,7 +2,7 @@
 
 if [ "$#" -lt 2 ]
 then
-	print "usage: $0 arch image [args]"
+	print "usage: $0 arch [docker args]"
 	exit 1
 fi
 
@@ -10,7 +10,11 @@ ARCH=$1
 
 shift
 
-[ ! -f qemu ] && make
+if [ ! -f qemu ]
+then
+	mkdir -p qemu
+	(cd qemu && docker run justincormack/debian-qemu-user tarup.sh | tar xf -)
+fi
 
 if [ ! -f qemu/qemu-$ARCH-static ]
 then
@@ -18,14 +22,25 @@ then
 	exit 1
 fi
 
-IMAGE=$1
+docker info | grep -q 'Server Version: 1.10' && EXTRA_ARGS="--security-opt seccomp:unconfined"
 
-shift
+# Parsing is rather flaky here, it needs to understand docker arguments
 
-docker info | grep -q 'Server Version: 1.10' && SECURITY_OPT="--security-opt seccomp:unconfined"
+for var in "$@"
+do
+	if [ -z "$IMAGE" ] && echo "$var" | grep -q '^-'
+	then
+		EXTRA_ARGS="$EXTRA_ARGS $var"
+	else
+		if [ -z "$IMAGE" ]
+		then
+			IMAGE="$var"
+		else
+			ARGS="$ARGS $var"
+		fi
+	fi
+done
 
-set -x
+#set -x
 
-EXTRA_ARGS="-it"
-
-docker run --cap-add sys_admin $SECURITY_OPT -v $PWD/qemu/qemu-$ARCH-static:/usr/bin/qemu-$ARCH-static -v $PWD/run.sh:/usr/local/bin/run.sh $EXTRA_ARGS $IMAGE run.sh $*
+docker run --cap-add sys_admin -v $PWD/qemu/qemu-$ARCH-static:/usr/bin/qemu-$ARCH-static -v $PWD/run.sh:/usr/local/bin/run.sh $EXTRA_ARGS $IMAGE run.sh $ARGS
