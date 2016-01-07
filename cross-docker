@@ -32,4 +32,4 @@ fi
 
 docker info | grep -q 'Server Version: 1.10' && EXTRA_ARGS="--security-opt seccomp:unconfined"
 
-docker run -v $PWD/qemu/qemu-$ARCH-static:/usr/bin/qemu-$ARCH-static -v $PWD/run.sh:/usr/local/bin/run.sh $EXTRA_ARGS $*
+docker run -v $PWD/qemu/qemu-$ARCH-static:/usr/bin/qemu-$ARCH-static $EXTRA_ARGS $*
