@@ -20,7 +20,7 @@ The first time you use it it will download the `qemu` binaries.
 ## I am too lazy even to do that
 
 If your docker container already has the `qemu` binary in, you do not need this, eg
-`docker run resin/armv7hf-debian uname -a`.
+`docker run resin/armv7hf-debian uname -a` or `docker run justincormack/ppc64le-debian uname -a`.
 
 ## Architectures
 
