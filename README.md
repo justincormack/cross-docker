@@ -11,11 +11,16 @@ sure that the `binfmt_misc` pseudo filesystem is mounted (and configured).
 ## How to use it
 
 ```
-./cross-docker run arm -it armv7/armhf-ubuntu uname -a
+./cross-docker run -it armv7/armhf-ubuntu uname -a
 Linux a6722bd5dabb 4.1.12 #1 SMP Mon Jan 4 11:26:42 UTC 2016 armv7l armv7l armv7l GNU/Linux
 ```
 
 The first time you use it it will download the `qemu` binaries.
+
+## I am too lazy even to do that
+
+If your docker container already has the `qemu` binary in, you do not need this, eg
+`docker run resin/armv7hf-debian uname -a`.
 
 ## Architectures
 
