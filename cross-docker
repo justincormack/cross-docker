@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if [ "$#" -lt 3 ]
+if [ "$#" -lt 2 ]
 then
-	printf "usage: $0 run arch [docker args]\n"
+	printf "usage: $0 run [docker args]\n"
 	exit 1
 fi
 
@@ -14,22 +14,16 @@ fi
 
 shift
 
-ARCH=$1
-
-shift
-
 if [ ! -f /tmp/qemu-static ]
 then
 	mkdir -p /tmp/qemu-static
 	(cd /tmp/qemu-static && docker run justincormack/debian-qemu-user tarup.sh | tar xf -)
 fi
 
-if [ ! -f /tmp/qemu-static/qemu-$ARCH-static ]
-then
-	printf "architecture $ARCH not found\n"
-	exit 1
-fi
+for f in /tmp/qemu-static/qemu-*-static
+do
+	ARCH="$(basename $f | sed 's/^qemu-//' | sed 's/-static$//')"
+	VOLUMES="${VOLUMES} -v $f:/usr/bin/qemu-$ARCH-static"
+done
 
-docker info | grep -q 'Server Version: 1.10' && EXTRA_ARGS="--security-opt seccomp:unconfined"
-
-exec docker run -v /tmp/qemu-static/qemu-$ARCH-static:/usr/bin/qemu-$ARCH-static $EXTRA_ARGS $*
+exec docker run ${VOLUMES} $*
