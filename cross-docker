@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 if [ "$#" -lt 2 ]
 then
@@ -14,10 +15,10 @@ fi
 
 shift
 
-if [ ! -f /tmp/qemu-static ]
+if [ ! -f /tmp/qemu-static/qemu-arm-static ]
 then
 	mkdir -p /tmp/qemu-static
-	(cd /tmp/qemu-static && docker run justincormack/debian-qemu-user tarup.sh | tar xf -)
+	(cd /tmp/qemu-static && docker run --rm justincormack/debian-qemu-user tarup.sh | tar xf -)
 fi
 
 for f in /tmp/qemu-static/qemu-*-static
